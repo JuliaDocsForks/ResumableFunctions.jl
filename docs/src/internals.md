@@ -13,11 +13,10 @@ The complete procedure is explained using the following example:
 @resumable function fibonnaci(n::Int)
   a = 0
   b = 1
-  for i in 1:n-1
+  for i in 1:n
     @yield a
     a, b = b, a + b
   end
-  a
 end
 ```
 
@@ -33,14 +32,13 @@ The function definition is split by `MacroTools.splitdef` in different parts, eg
 begin
   a = 0
   b = 1
-  _iter = 1:n-1
+  _iter = 1:n
   _iterstate = start(_iter)
   while !done(_iter, _iterstate)
     i, _iterstate = next(_iter, _iterstate)
     @yield a
     a, b = b, a + b
   end
-  a
 end
 ```
 
@@ -102,14 +100,13 @@ The slots are replaced by references to the fields of the composite type:
 begin
   _fsmi.a = 0
   _fsmi.b = 1
-  _fsmi._iter = 1:n-1
+  _fsmi._iter = 1:n
   _fsmi._iterstate = start(_fsmi._iter)
   while !done(_fsmi._iter, _fsmi._iterstate)
     _fsmi.i, _fsmi._iterstate = next(_fsmi._iter, _fsmi._iterstate)
     @yield _fsmi.a
     _fsmi.a, _fsmi.b = _fsmi.b, _fsmi.a + _fsmi.b
   end
-  _fsmi.a
 end
 ```
 
@@ -130,7 +127,7 @@ Exception handling is added to `@yield`:
 begin
   _fsmi.a = 0
   _fsmi.b = 1
-  _fsmi._iter = 1:n-1
+  _fsmi._iter = 1:n
   _fsmi._iterstate = start(_fsmi._iter)
   while !done(_fsmi._iter, _fsmi._iterstate)
     _fsmi.i, _fsmi._iterstate = next(_fsmi._iter, _fsmi._iterstate)
@@ -138,7 +135,6 @@ begin
     _arg isa Exception && throw(_arg)
     _fsmi.a, _fsmi.b = _fsmi.b, _fsmi.a + _fsmi.b
   end
-  _fsmi.a
 end
 ```
 
@@ -154,7 +150,7 @@ The `@yield` statement is replaced by a `return` statement and a label placehold
 begin
   _fsmi.a = 0
   _fsmi.b = 1
-  _fsmi._iter = 1:n-1
+  _fsmi._iter = 1:n
   _fsmi._iterstate = start(_fsmi._iter)
   while !done(_fsmi._iter, _fsmi._iterstate)
     _fsmi.i, _fsmi._iterstate = next(_fsmi._iter, _fsmi._iterstate)
@@ -165,7 +161,6 @@ begin
     _arg isa Exception && throw(_arg)
     _fsmi.a, _fsmi.b = _fsmi.b, _fsmi.a + _fsmi.b
   end
-  _fsmi.a
 end
 ```
 
@@ -183,7 +178,7 @@ begin
   _arg isa Exception && throw(_arg)
   _fsmi.a = 0
   _fsmi.b = 1
-  _fsmi._iter = 1:n-1
+  _fsmi._iter = 1:n
   _fsmi._iterstate = start(_fsmi._iter)
   while !done(_fsmi._iter, _fsmi._iterstate)
     _fsmi.i, _fsmi._iterstate = next(_fsmi._iter, _fsmi._iterstate)
@@ -194,7 +189,6 @@ begin
     _arg isa Exception && throw(_arg)
     _fsmi.a, _fsmi.b = _fsmi.b, _fsmi.a + _fsmi.b
   end
-  _fsmi.a
 end
 ```
 
@@ -212,7 +206,7 @@ function (_fsmi::##123)(_arg::Any=nothing)
   _arg isa Exception && throw(_arg)
   _fsmi.a = 0
   _fsmi.b = 1
-  _fsmi._iter = 1:n-1
+  _fsmi._iter = 1:n
   _fsmi._iterstate = start(_fsmi._iter)
   while !done(_fsmi._iter, _fsmi._iterstate)
     _fsmi.i, _fsmi._iterstate = next(_fsmi._iter, _fsmi._iterstate)
@@ -223,6 +217,5 @@ function (_fsmi::##123)(_arg::Any=nothing)
     _arg isa Exception && throw(_arg)
     _fsmi.a, _fsmi.b = _fsmi.b, _fsmi.a + _fsmi.b
   end
-  _fsmi.a
 end
 ```
