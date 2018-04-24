@@ -65,7 +65,6 @@ function make_arg_any(expr, slots::Dict{Symbol, Any})
   expr
 end
 
-
 """
 Function returning the args for the type construction.
 """
@@ -76,4 +75,13 @@ function make_args(func_def::Dict)
     push!(args, combinearg(arg_def[1], arg_def[2], false, arg_def[4]))
   end
   (args...)
+end
+
+"""
+Function checking the use of a return statement with value
+"""
+function hasreturnvalue(expr)
+  @capture(expr, return val_) || return expr
+  (val == :nothing || val == nothing) && return expr
+  error("@resumable functions contains return statement with value!")
 end
