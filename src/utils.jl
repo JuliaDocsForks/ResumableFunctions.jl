@@ -83,5 +83,6 @@ Function checking the use of a return statement with value
 function hasreturnvalue(expr)
   @capture(expr, return val_) || return expr
   (val == :nothing || val == nothing) && return expr
-  error("@resumable functions contains return statement with value!")
+  warn("@resumable functions contains return statement with value!")
+  expr
 end
